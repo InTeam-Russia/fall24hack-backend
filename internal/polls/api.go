@@ -56,12 +56,7 @@ func SetupRoutes(
 				p.Answers = nil
 			}
 
-			response = append(response, OutModel{
-				Id:      p.Id,
-				Text:    p.Text,
-				Type:    p.Type,
-				Answers: p.Answers,
-			})
+			response = append(response, OutModel(p))
 		}
 
 		c.JSON(http.StatusOK, response)
