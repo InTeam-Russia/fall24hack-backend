@@ -52,7 +52,13 @@ func main() {
 	cookieConfig.Secure = config.SessionCookieSecure
 	cookieConfig.Domain = config.SessionCookieDomain
 
-	mlService := ml.NewMockService(logger)
+	var mlService ml.Service
+	if config.MockML {
+		mlService = ml.NewMockService(logger)
+	} else {
+		mlService = ml.NewAPIService(logger, config.MLBaseURL)
+	}
+
 	userRepo := user.NewPGRepo(pgPool, logger)
 	pollsRepo := polls.NewPGRepo(pgPool, logger)
 	sessionRepo := session.NewRedisRepo(redisClient, logger)
