@@ -62,3 +62,9 @@ func (s *APIService) OnQuestion(text string) error {
 
 	return nil
 }
+
+func (s *APIService) OnCreateUser(userId int64) error {
+	// TODO: Implement
+	s.logger.Error("Not implemented")
+	return nil
+}

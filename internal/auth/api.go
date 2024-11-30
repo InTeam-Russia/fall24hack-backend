@@ -7,6 +7,7 @@ import (
 	"github.com/InTeam-Russia/go-backend-template/internal/auth/password"
 	"github.com/InTeam-Russia/go-backend-template/internal/auth/session"
 	"github.com/InTeam-Russia/go-backend-template/internal/auth/user"
+	"github.com/InTeam-Russia/go-backend-template/internal/ml"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -30,6 +31,7 @@ func SetupRoutes(
 	r *gin.Engine,
 	userRepo user.Repo,
 	sessionRepo session.Repo,
+	mlService ml.Service,
 	logger *zap.Logger,
 	cookieConfig *CookieConfig,
 ) {
@@ -98,6 +100,13 @@ func SetupRoutes(
 		}
 
 		u, err := userRepo.Create(&createUser)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, apierr.InternalServer)
+			logger.Error(err.Error())
+			return
+		}
+
+		err = mlService.OnCreateUser(u.Id)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, apierr.InternalServer)
 			logger.Error(err.Error())

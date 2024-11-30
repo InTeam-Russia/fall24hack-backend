@@ -51,12 +51,13 @@ func main() {
 	cookieConfig.Secure = config.SessionCookieSecure
 	cookieConfig.Domain = config.SessionCookieDomain
 
+	mlService := ml.NewMockService(logger)
 	userRepo := user.NewPGRepo(pgPool, logger)
 	pollsRepo := polls.NewPGRepo(pgPool)
 	sessionRepo := session.NewRedisRepo(redisClient, logger)
 
-	auth.SetupRoutes(r, userRepo, sessionRepo, logger, cookieConfig)
-	polls.SetupRoutes(r, pollsRepo, sessionRepo, ml.NewMockService(logger), logger)
+	auth.SetupRoutes(r, userRepo, sessionRepo, mlService, logger, cookieConfig)
+	polls.SetupRoutes(r, pollsRepo, sessionRepo, mlService, logger)
 
 	err = r.Run()
 	if err != nil {

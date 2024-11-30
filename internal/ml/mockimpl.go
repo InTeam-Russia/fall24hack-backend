@@ -19,3 +19,8 @@ func (s *MockService) OnQuestion(text string) error {
 	s.logger.Info("ml.MockService.OnQuestion called")
 	return nil
 }
+
+func (s *MockService) OnCreateUser(userId int64) error {
+	s.logger.Info("ml.MockService.OnCreateUser called")
+	return nil
+}
