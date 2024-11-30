@@ -24,3 +24,12 @@ func (s *MockService) OnCreateUser(userId int64) error {
 	s.logger.Info("ml.MockService.OnCreateUser called")
 	return nil
 }
+
+func (s *MockService) UsersANN(userId int64, neighboursCount int, searchType SearchType) ([]User, error) {
+	s.logger.Info("ml.MockService.UsersANN called")
+	u := make([]User, neighboursCount)
+	for i := 0; i < neighboursCount; i++ {
+		u[i] = User{Id: int64(i + 1), OverlappingPercentage: 75}
+	}
+	return u, nil
+}

@@ -68,3 +68,9 @@ func (s *APIService) OnCreateUser(userId int64) error {
 	s.logger.Error("Not implemented")
 	return nil
 }
+
+func (s *APIService) UsersANN(userId int64, neighboursCount int, searchType SearchType) ([]User, error) {
+	// TODO: Implement
+	s.logger.Error("Not implemented")
+	return make([]User, 0), nil
+}

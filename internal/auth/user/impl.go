@@ -3,6 +3,8 @@ package user
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/InTeam-Russia/go-backend-template/internal/auth/password"
@@ -98,6 +100,54 @@ func (r *PGRepo) GetById(id int64) (*Model, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *PGRepo) GetByIds(ids []int64) ([]OutModel, error) {
+	params := make([]string, len(ids))
+	args := make([]interface{}, len(ids))
+	for i, id := range ids {
+		params[i] = fmt.Sprintf("$%d", i+1)
+		args[i] = id
+	}
+
+	query := fmt.Sprintf(`
+		SELECT id, created_at, first_name, last_name, username, email, role, tg_link
+		FROM users
+		WHERE id IN (%s);
+	`, strings.Join(params, ", "))
+
+	rows, err := r.db.Query(context.Background(), query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := make([]OutModel, 0)
+	for rows.Next() {
+		var user OutModel
+
+		err := rows.Scan(
+			&user.Id,
+			&user.CreatedAt,
+			&user.FirstName,
+			&user.LastName,
+			&user.Username,
+			&user.Email,
+			&user.Role,
+			&user.TgLink,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
+	return users, nil
 }
 
 const getByUsernameSql = `

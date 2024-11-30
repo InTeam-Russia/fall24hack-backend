@@ -13,6 +13,7 @@ import (
 	"github.com/InTeam-Russia/go-backend-template/internal/db"
 	"github.com/InTeam-Russia/go-backend-template/internal/ml"
 	"github.com/InTeam-Russia/go-backend-template/internal/polls"
+	"github.com/InTeam-Russia/go-backend-template/internal/recommendations"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -58,6 +59,7 @@ func main() {
 
 	auth.SetupRoutes(r, userRepo, sessionRepo, mlService, logger, cookieConfig)
 	polls.SetupRoutes(r, pollsRepo, sessionRepo, mlService, logger)
+	recommendations.SetupRoutes(r, sessionRepo, mlService, userRepo, logger)
 
 	err = r.Run()
 	if err != nil {

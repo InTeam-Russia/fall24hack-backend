@@ -51,3 +51,7 @@ var InvalidPageSize = ApiError{
 var InvalidID = ApiError{
 	Error: "INVALID_ID",
 }
+
+var InvalidSearchType = ApiError{
+	Error: "INVALID_SEARCH_TYPE",
+}
