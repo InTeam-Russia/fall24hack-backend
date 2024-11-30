@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT UNIQUE NOT NULL,
     role user_role NOT NULL,
     password_hash BYTEA NOT NULL,
-    password_salt BYTEA NOT NULL
+    password_salt BYTEA NOT NULL,
+    tg_link TEXT NOT NULL
 );

@@ -21,8 +21,8 @@ func NewPGRepo(db *pgxpool.Pool, logger *zap.Logger) Repo {
 }
 
 const createUserSql = `
-	INSERT INTO users (first_name, last_name, username, email, role, password_hash, password_salt, created_at)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	INSERT INTO users (first_name, last_name, username, email, role, password_hash, password_salt, created_at, tg_link)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	RETURNING id, created_at
 `
 
@@ -41,6 +41,7 @@ func (r *PGRepo) Create(user *CreateModel) (*Model, error) {
 	newUser.Username = user.Username
 	newUser.Email = user.Email
 	newUser.Role = user.Role
+	newUser.TgLink = user.TgLink
 	newUser.PasswordHash = passwordHash
 	newUser.PasswordSalt = passwordSalt
 
@@ -55,6 +56,7 @@ func (r *PGRepo) Create(user *CreateModel) (*Model, error) {
 		newUser.PasswordHash,
 		newUser.PasswordSalt,
 		time.Now(),
+		newUser.TgLink,
 	).Scan(&newUser.Id, &newUser.CreatedAt)
 
 	if err != nil {
@@ -65,7 +67,7 @@ func (r *PGRepo) Create(user *CreateModel) (*Model, error) {
 }
 
 const getByIdSql = `
-	SELECT id, first_name, last_name, username, email, role, password_hash, password_salt, created_at
+	SELECT id, first_name, last_name, username, email, role, password_hash, password_salt, created_at, tg_link
 	FROM users
 	WHERE id = $1
 `
@@ -86,6 +88,7 @@ func (r *PGRepo) GetById(id int64) (*Model, error) {
 		&user.PasswordHash,
 		&user.PasswordSalt,
 		&user.CreatedAt,
+		&user.TgLink,
 	)
 
 	if err != nil {
@@ -98,7 +101,7 @@ func (r *PGRepo) GetById(id int64) (*Model, error) {
 }
 
 const getByUsernameSql = `
-	SELECT id, first_name, last_name, username, email, role, password_hash, password_salt, created_at
+	SELECT id, first_name, last_name, username, email, role, password_hash, password_salt, created_at, tg_link
 	FROM users
 	WHERE username = $1
 `
@@ -119,6 +122,7 @@ func (r *PGRepo) GetByUsername(username string) (*Model, error) {
 		&user.PasswordHash,
 		&user.PasswordSalt,
 		&user.CreatedAt,
+		&user.TgLink,
 	)
 
 	if err != nil {

@@ -4,15 +4,8 @@ services:
     command: ["/app/webserver"]
     ports:
       - "${PORT:-8080}:8080"
-    environment:
-      - POSTGRES_URL=postgresql://${DB_USER:-sguhack}@db/${DB_NAME:-sguhack}
-      - REDIS_URL=redis://dragonfly/0
-      - SESSION_COOKIE_SECURE=false
-      - SESSION_COOKIE_DOMAIN=${SESSION_COOKIE_DOMAIN:-localhost:5173}
-      - ALLOW_ORIGIN=${ALLOW_ORIGIN:-http://localhost:5173}
-      - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-123}
+    env_file:
+      - .env.compose
     depends_on:
       - db
       - dragonfly
@@ -20,15 +13,9 @@ services:
   initdb:
     build: .
     command: ["/app/initdb"]
+    env_file:
+      - .env.compose
     environment:
-      - POSTGRES_URL=postgresql://${DB_USER:-sguhack}@db/${DB_NAME:-sguhack}
-      - REDIS_URL=redis://dragonfly/0
-      - SESSION_COOKIE_SECURE=false
-      - SESSION_COOKIE_DOMAIN=${SESSION_COOKIE_DOMAIN:-localhost:5173}
-      - ALLOW_ORIGIN=${ALLOW_ORIGIN:-http://localhost:5173}
-      - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-123}
       - SQL_FILE=/app/db/CreateTables.sql
     depends_on:
       - backend
@@ -36,15 +23,9 @@ services:
   dropdb:
     build: .
     command: ["/app/dropdb"]
+    env_file:
+      - .env.compose
     environment:
-      - POSTGRES_URL=postgresql://${DB_USER:-sguhack}@db/${DB_NAME:-sguhack}
-      - REDIS_URL=redis://dragonfly/0
-      - SESSION_COOKIE_SECURE=false
-      - SESSION_COOKIE_DOMAIN=${SESSION_COOKIE_DOMAIN:-localhost:5173}
-      - ALLOW_ORIGIN=${ALLOW_ORIGIN:-http://localhost:5173}
-      - LOG_LEVEL=${LOG_LEVEL:-debug}
-      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-123}
       - SQL_FILE=/app/db/DropTables.sql
     depends_on:
       - backend
@@ -55,6 +36,8 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_DB=${DB_NAME:-sguhack}
       - POSTGRES_USER=${DB_USER:-sguhack}
+    env_file:
+      - .env.compose
     healthcheck:
       test: "pg_isready --username=${DB_USER:-sguhack} --database=${DB_NAME:-sguhack}"
       interval: 5s
@@ -67,7 +50,7 @@ services:
     ulimits:
       memlock: -1
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"] 
       interval: 5s
       timeout: 5s
       retries: 3

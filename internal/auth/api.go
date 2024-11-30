@@ -23,6 +23,7 @@ type Register struct {
 	Username  string `json:"username" binding:"required"`
 	Email     string `json:"email" binding:"required"`
 	Password  string `json:"password" binding:"required"`
+	TgLink    string `json:"tgLink" binding:"required"`
 }
 
 func SetupRoutes(
@@ -93,6 +94,7 @@ func SetupRoutes(
 			Email:     registerJson.Email,
 			Password:  registerJson.Password,
 			Role:      "USER",
+			TgLink:    registerJson.TgLink,
 		}
 
 		u, err := userRepo.Create(&createUser)
@@ -163,5 +165,6 @@ func mapUserToUserOut(u *user.Model) *user.OutModel {
 		Username:  u.Username,
 		Email:     u.Email,
 		Role:      u.Role,
+		TgLink:    u.TgLink,
 	}
 }

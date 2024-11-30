@@ -12,6 +12,7 @@ type Model struct {
 	Role         string
 	PasswordHash []byte
 	PasswordSalt []byte
+	TgLink       string
 }
 
 type OutModel struct {
@@ -22,6 +23,7 @@ type OutModel struct {
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Role      string    `json:"role"`
+	TgLink    string    `json:"tgLink"`
 }
 
 type CreateModel struct {
@@ -31,4 +33,5 @@ type CreateModel struct {
 	Email     string `json:"email" binding:"required"`
 	Role      string `json:"role" binding:"required"`
 	Password  string `json:"password" binding:"password"`
+	TgLink    string `json:"tgLink" binding:"required"`
 }
