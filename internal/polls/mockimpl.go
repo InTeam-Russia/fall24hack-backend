@@ -59,6 +59,11 @@ func (r *MockRepo) GetUncompletedPolls(pageIndex int, pageSize int, userId int64
 }
 
 func (r *MockRepo) AddAnswer(userId int64, pollId int64, text string) error {
-	fmt.Println("Add answer")
+	fmt.Println("Add answer in mock")
+	return nil
+}
+
+func (r *MockRepo) CreatePoll(poll *CreateModel, authorId int64, cluster int) error {
+	fmt.Println("Create poll in mock")
 	return nil
 }

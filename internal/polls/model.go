@@ -17,10 +17,9 @@ type Model struct {
 }
 
 type CreateModel struct {
-	Text     string   `json:"text" binding:"required"`
-	Type     PollType `json:"type" binding:"required"`
-	AuthorID int64    `json:"authorId" binding:"required"`
-	Cluster  int      `json:"cluster" binding:"required"`
+	Text    string   `json:"text" binding:"required"`
+	Type    PollType `json:"type" binding:"required"`
+	Answers []string `json:"answers"`
 }
 
 type OutModel struct {

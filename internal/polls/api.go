@@ -104,4 +104,45 @@ func SetupRoutes(
 			"status": "OK",
 		})
 	})
+
+	r.POST("/polls", func(c *gin.Context) {
+		session, err := session.CheckHTTPReq(c, sessionRepo, logger)
+		if err != nil {
+			return
+		}
+
+		var request CreateModel
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(http.StatusBadRequest, apierr.InvalidJSON)
+			return
+		}
+
+		if request.Type != FREE && request.Type != RADIO {
+			c.JSON(http.StatusBadRequest, apierr.InvalidPollType)
+			return
+		}
+
+		if request.Type == RADIO && len(request.Answers) == 0 {
+			c.JSON(http.StatusBadRequest, apierr.NoRadioAnswers)
+			return
+		}
+
+		cluster, err := mlService.OnQuestion(request.Text)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, apierr.InternalServer)
+			logger.Error(err.Error())
+			return
+		}
+
+		err = pollRepo.CreatePoll(&request, session.UserId, cluster)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, apierr.InternalServer)
+			logger.Error(err.Error())
+			return
+		}
+
+		c.JSON(http.StatusCreated, gin.H{
+			"status": "OK",
+		})
+	})
 }

@@ -15,9 +15,9 @@ func (s *MockService) OnAnswer(userId int64, text string) error {
 	return nil
 }
 
-func (s *MockService) OnQuestion(text string) error {
+func (s *MockService) OnQuestion(text string) (Cluster, error) {
 	s.logger.Info("ml.MockService.OnQuestion called")
-	return nil
+	return 0, nil
 }
 
 func (s *MockService) OnCreateUser(userId int64) error {

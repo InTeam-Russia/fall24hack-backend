@@ -54,7 +54,7 @@ func main() {
 
 	mlService := ml.NewMockService(logger)
 	userRepo := user.NewPGRepo(pgPool, logger)
-	pollsRepo := polls.NewPGRepo(pgPool)
+	pollsRepo := polls.NewPGRepo(pgPool, logger)
 	sessionRepo := session.NewRedisRepo(redisClient, logger)
 
 	auth.SetupRoutes(r, userRepo, sessionRepo, mlService, logger, cookieConfig)

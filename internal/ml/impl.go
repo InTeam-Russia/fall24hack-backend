@@ -44,12 +44,12 @@ func (s *APIService) OnAnswer(userId int64, text string) error {
 	return nil
 }
 
-func (s *APIService) OnQuestion(text string) error {
+func (s *APIService) OnQuestion(text string) (Cluster, error) {
 	s.logger.Debug("ml.APIService.OnQuestion called")
 
 	relativeURL, err := url.Parse("/on_new_question")
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	jsonData := fmt.Sprintf(`{"text": "%s"}`, text)
@@ -57,10 +57,10 @@ func (s *APIService) OnQuestion(text string) error {
 
 	_, err = http.Post(url.String(), "application/json", bytes.NewBuffer([]byte(jsonData)))
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return 0, nil
 }
 
 func (s *APIService) OnCreateUser(userId int64) error {

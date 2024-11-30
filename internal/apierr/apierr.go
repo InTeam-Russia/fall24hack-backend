@@ -55,3 +55,11 @@ var InvalidID = ApiError{
 var InvalidSearchType = ApiError{
 	Error: "INVALID_SEARCH_TYPE",
 }
+
+var InvalidPollType = ApiError{
+	Error: "INVALID_POLL_TYPE",
+}
+
+var NoRadioAnswers = ApiError{
+	Error: "NO_RADIO_ANSWERS",
+}
