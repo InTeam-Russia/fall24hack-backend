@@ -1,2 +1,11 @@
+DROP TABLE IF EXISTS radio_answers;
+
+DROP TABLE IF EXISTS user_answers;
+
+DROP TABLE IF EXISTS polls;
+
 DROP TABLE IF EXISTS users;
+
 DROP TYPE IF EXISTS user_role;
+
+DROP TYPE IF EXISTS poll_type;
