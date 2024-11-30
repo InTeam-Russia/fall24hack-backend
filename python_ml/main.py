@@ -196,37 +196,47 @@ async def users_ann(cfg: UsersAnn):
     
     user_vectors = []
 
+    # Собираем вектора для заданного пользователя
     for key, value in document["clusters"].items():
-        user_vectors.append(value["vector"][0])
-    
+        user_vectors.append(np.array(value["vector"][0]))
 
-    np_user_vectors = np.array(user_vectors).flatten()
-    
-    index = faiss.IndexFlatL2(384)
-    
+    # Формируем вектор для текущего пользователя
+    np_user_vectors = np.array(user_vectors).astype(np.float32)  # Размерность (N, 384)
+    print("User vectors shape:", np_user_vectors.shape)
+
+    # Создаем индекс FAISS
+    index = faiss.IndexFlatL2(384)  # Убедимся, что размерность совпадает
+
     ids = []
     other_user_vecs = []
+
+    # Собираем вектора всех других пользователей
     async for d in collection.find():
         ids.append(d["user_id"])
-        for key, value in document["clusters"].items():
-            other_user_vecs.append(np.array(value["vector"][0]).flatten())
+        for key, value in d["clusters"].items():  # Здесь используем d, а не document
+            vector = np.array(value["vector"][0])
+            other_user_vecs.append(vector)
 
+    # Преобразуем другие вектора в массив numpy
     other_user_vecs = np.array(other_user_vecs).astype(np.float32)
-    
+    print("Other user vectors shape:", other_user_vecs.shape)
+
+    # Добавляем другие вектора в индекс
     index.add(other_user_vecs)
 
+    # Подготовка запроса
     if cfg.search_type == "opposite":
         np_user_vectors = -np_user_vectors
 
-    distances, indices = index.search(np_user_vectors.reshape(1, -1), cfg.k)
-
+    # Выполняем поиск для каждого вектора пользователя
     result = []
-    for dist, idx in zip(distances, indices):
-        user_id = ids[idx]
-        overlapping_percentage = int(distances[idx] * 100)
-        result.append(dict(user_id=user_id, overlapping_percentage=overlapping_percentage))
+    for user_vector in np_user_vectors:  # Размерность (384,)
+        distances, indices = index.search(user_vector.reshape(1, -1), cfg.k)
+        print(distances)
+
+        for dist, idx in zip(distances[0], indices[0]):  # Индексы для 1 вектора
+            user_id = ids[idx]
+            overlapping_percentage = float(dist * 100)
+            result.append(dict(user_id=user_id, overlapping_percentage=overlapping_percentage))
 
     return result
-
-
-    
