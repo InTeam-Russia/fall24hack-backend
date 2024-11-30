@@ -27,12 +27,7 @@ async def connect_to_mongo():
 async def connect_to_postgres():
    conn = await asyncpg.connect(POSTGRES_URL)
    return conn
-   
 
-async def question_helper(question):
-   return {
-      "question": int(question["question"])
-   }
 
 model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 
@@ -119,6 +114,7 @@ async def on_new_question(question: OnNewQuestionIn):
     
     return {"cluster": int(created_cluster)}
 
+
 @app.post("/on_new_answer")
 async def on_new_answer(a: OnNewAnswerIn):
     mongo_db = await connect_to_mongo()
@@ -151,11 +147,8 @@ async def on_new_answer(a: OnNewAnswerIn):
 
         result = await collection.update_one({}, update_query)
         
-        #document[str(a.user_id)][str(min_distance_label)]["vector"] = (new_answ * int(document[str(a.user_id)][str(min_distance_label)]["quantity"]) + a_vec) / (int(document[str(a.user_id)][str(min_distance_label)]["quantity"]) + 1)
-
-
-
     return {"status": "ok"}
+
 
 @app.post("/on_register_user")
 async def on_register_user(user_id: int):
@@ -174,7 +167,7 @@ async def on_register_user(user_id: int):
     document["user_id"] = user_id
     document["clusters"] = dict()
     for cluster in clusters:
-        document["clusters"][cluster] = {"vector": np.array([model.encode("Aboba")]).tolist(), "quantity": 0}
+        document["clusters"][cluster] = {"vector": [np.zeros(384, dtype=np.float32).tolist()], "quantity": 0}
     await collection.insert_one(document)
     return {"status": "ok"}
 
@@ -236,7 +229,7 @@ async def users_ann(cfg: UsersAnn):
 
         for dist, idx in zip(distances[0], indices[0]):  # Индексы для 1 вектора
             user_id = ids[idx]
-            overlapping_percentage = float(dist * 100)
+            overlapping_percentage = int(dist * 100)
             result.append(dict(user_id=user_id, overlapping_percentage=overlapping_percentage))
 
     return result
