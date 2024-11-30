@@ -39,3 +39,11 @@ var SessionExpired = ApiError{
 var UserNotFound = ApiError{
 	Error: "USER_NOT_FOUND",
 }
+
+var InvalidPageIndex = ApiError{
+	Error: "INVALID_PAGE_INDEX",
+}
+
+var InvalidPageSize = ApiError{
+	Error: "INVALID_PAGE_SIZE",
+}
