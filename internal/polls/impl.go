@@ -40,10 +40,6 @@ func (r *PGRepo) GetUncompletedPolls(pageIndex int, pageSize int, userId int64) 
 			return nil, err
 		}
 
-		// if poll.Type == RADIO && answerText != nil {
-		// 	poll.Answers = append(poll.Answers, *answerText)
-		// }
-
 		polls = append(polls, poll)
 	}
 
