@@ -1,10 +1,12 @@
 package polls
 
+import "fmt"
+
 type MockRepo struct {
 	polls []Model
 }
 
-func NewMockRepo() *MockRepo {
+func NewMockRepo() Repo {
 	return &MockRepo{
 		polls: []Model{
 			{Id: 1, Text: "Что вы думаете о Go?", Type: FREE, AuthorID: 1, Cluster: 1},
@@ -54,4 +56,9 @@ func (r *MockRepo) GetUncompletedPolls(pageIndex int, pageSize int, userId int64
 	}
 
 	return r.polls[start:end], nil
+}
+
+func (r *MockRepo) AddAnswer(userId int64, pollId int64, text string) error {
+	fmt.Println("Add answer")
+	return nil
 }

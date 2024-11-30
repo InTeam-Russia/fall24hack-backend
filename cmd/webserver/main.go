@@ -11,6 +11,7 @@ import (
 	"github.com/InTeam-Russia/go-backend-template/internal/config"
 	"github.com/InTeam-Russia/go-backend-template/internal/cors"
 	"github.com/InTeam-Russia/go-backend-template/internal/db"
+	"github.com/InTeam-Russia/go-backend-template/internal/ml"
 	"github.com/InTeam-Russia/go-backend-template/internal/polls"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -55,7 +56,7 @@ func main() {
 	sessionRepo := session.NewRedisRepo(redisClient, logger)
 
 	auth.SetupRoutes(r, userRepo, sessionRepo, logger, cookieConfig)
-	polls.SetupRoutes(r, pollsRepo, sessionRepo, logger)
+	polls.SetupRoutes(r, pollsRepo, sessionRepo, ml.NewMockService(logger), logger)
 
 	err = r.Run()
 	if err != nil {

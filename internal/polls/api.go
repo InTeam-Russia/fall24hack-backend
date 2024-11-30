@@ -6,14 +6,20 @@ import (
 
 	"github.com/InTeam-Russia/go-backend-template/internal/apierr"
 	"github.com/InTeam-Russia/go-backend-template/internal/auth/session"
+	"github.com/InTeam-Russia/go-backend-template/internal/ml"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
+
+type AnswerRequest struct {
+	Answer string `json:"answer" binding:"required"`
+}
 
 func SetupRoutes(
 	r *gin.Engine,
 	pollRepo Repo,
 	sessionRepo session.Repo,
+	mlService ml.Service,
 	logger *zap.Logger,
 ) {
 	r.GET("/polls", func(c *gin.Context) {
@@ -59,5 +65,43 @@ func SetupRoutes(
 		}
 
 		c.JSON(http.StatusOK, response)
+	})
+
+	r.POST("/polls/:id/answer", func(c *gin.Context) {
+		session, err := session.CheckHTTPReq(c, sessionRepo, logger)
+		if err != nil {
+			return
+		}
+
+		var request AnswerRequest
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(http.StatusBadRequest, apierr.InvalidJSON)
+			return
+		}
+
+		pollIdStr := c.Param("id")
+		pollId, err := strconv.ParseInt(pollIdStr, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, apierr.InvalidID)
+			return
+		}
+
+		err = pollRepo.AddAnswer(session.UserId, pollId, request.Answer)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, apierr.InternalServer)
+			logger.Error(err.Error())
+			return
+		}
+
+		err = mlService.OnAnswer(session.UserId, request.Answer)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, apierr.InternalServer)
+			logger.Error(err.Error())
+			return
+		}
+
+		c.JSON(http.StatusCreated, gin.H{
+			"status": "OK",
+		})
 	})
 }

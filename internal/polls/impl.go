@@ -49,3 +49,17 @@ func (r *PGRepo) GetUncompletedPolls(pageIndex int, pageSize int, userId int64) 
 
 	return polls, nil
 }
+
+func (r *PGRepo) AddAnswer(userId int64, pollId int64, text string) error {
+	query := `
+		INSERT INTO user_answers (user_id, poll_id, text)
+		VALUES ($1, $2, $3)
+	`
+
+	_, err := r.pg.Exec(context.Background(), query, userId, pollId, text)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

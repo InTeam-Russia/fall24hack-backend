@@ -47,3 +47,7 @@ var InvalidPageIndex = ApiError{
 var InvalidPageSize = ApiError{
 	Error: "INVALID_PAGE_SIZE",
 }
+
+var InvalidID = ApiError{
+	Error: "INVALID_ID",
+}

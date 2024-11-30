@@ -23,7 +23,7 @@ func NewAPIService(logger *zap.Logger, baseURL string) Service {
 	return &APIService{logger: logger, baseURL: url}
 }
 
-func (s *APIService) OnAnswer(text string) error {
+func (s *APIService) OnAnswer(userId int64, text string) error {
 	s.logger.Debug("ml.APIService.OnAnswer called")
 
 	relativeURL, err := url.Parse("/on_new_answer")
@@ -31,7 +31,7 @@ func (s *APIService) OnAnswer(text string) error {
 		return err
 	}
 
-	jsonData := fmt.Sprintf(`{"text": "%s"}`, text)
+	jsonData := fmt.Sprintf(`{"text": "%s", "user_id": %d}`, text, userId)
 	url := s.baseURL.ResolveReference(relativeURL)
 
 	_, err = http.Post(url.String(), "application/json", bytes.NewBuffer([]byte(jsonData)))

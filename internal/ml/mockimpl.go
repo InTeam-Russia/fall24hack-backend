@@ -10,7 +10,7 @@ func NewMockService(logger *zap.Logger) Service {
 	return &MockService{logger}
 }
 
-func (s *MockService) OnAnswer(text string) error {
+func (s *MockService) OnAnswer(userId int64, text string) error {
 	s.logger.Info("ml.MockService.OnAnswer called")
 	return nil
 }

@@ -1,6 +1,6 @@
 package ml
 
 type Service interface {
-	OnAnswer(text string) error
+	OnAnswer(userId int64, text string) error
 	OnQuestion(text string) error
 }
