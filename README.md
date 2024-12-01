@@ -2,85 +2,58 @@
 
 ## Как это запускать?
 
-### Пояснения
-
-1. Ниже приведены команды, где вместо `<название_БД>` и `<имя_пользователя>` вы подставляете, что хотите, лишь бы без угловых скобок и на латинице. В данном случае это название БД и имя пользователя в PostgreSQL соответственно.
-2. Dragonfly - это Key-Value база данных, которая имеет полную совместимость с API редиски, но не является её форком. А ещё довольно производительная, многопоточная и вообще...
-3. **Если вы работаете на Linux, вероятно потребуется ввести sudo перед командами, которые содержат в себе docker.**
-
-### Docker Compose
-
-**Данный Docker Compose не рекомендуется использовать для продакшена, так как он не устанавливает пароли для БД и вообще возможно сыроват. Зато фронтендерам будет удобно (наверно).**
-
-#### Первый шаг - запустить сам сервис
-
 ```sh
-DB_NAME=<название_БД> DB_USER=<имя_пользователя> docker compose up backend db dragonfly
+docker run -d -p 27017 mongo
+echo "c2VydmljZXM6CiAgYmFja2VuZDoKICAgIGJ1aWxkOiAuCiAgICBjb21tYW5kOiBbIi9hcHAvd2Vi
+c2VydmVyIl0KICAgIHBvcnRzOgogICAgICAtICIke1BPUlQ6LTgwODB9OjgwODAiCiAgICBlbnZf
+ZmlsZToKICAgICAgLSAuZW52LmNvbXBvc2UKICAgIGRlcGVuZHNfb246CiAgICAgIC0gZGIKICAg
+ICAgLSBkcmFnb25mbHkKCiAgaW5pdGRiOgogICAgYnVpbGQ6IC4KICAgIGNvbW1hbmQ6IFsiL2Fw
+cC9pbml0ZGIiXQogICAgZW52X2ZpbGU6CiAgICAgIC0gLmVudi5jb21wb3NlCiAgICBlbnZpcm9u
+bWVudDoKICAgICAgLSBTUUxfRklMRT0vYXBwL2RiL0NyZWF0ZVRhYmxlcy5zcWwKICAgIGRlcGVu
+ZHNfb246CiAgICAgIC0gYmFja2VuZAoKICBkcm9wZGI6CiAgICBidWlsZDogLgogICAgY29tbWFu
+ZDogWyIvYXBwL2Ryb3BkYiJdCiAgICBlbnZfZmlsZToKICAgICAgLSAuZW52LmNvbXBvc2UKICAg
+IGVudmlyb25tZW50OgogICAgICAtIFNRTF9GSUxFPS9hcHAvZGIvRHJvcFRhYmxlcy5zcWwKICAg
+IGRlcGVuZHNfb246CiAgICAgIC0gYmFja2VuZAoKICBkYjoKICAgIGltYWdlOiBwb3N0Z3Jlczox
+Ny4xLWFscGluZQogICAgZW52aXJvbm1lbnQ6CiAgICAgIC0gUE9TVEdSRVNfSE9TVF9BVVRIX01F
+VEhPRD10cnVzdAogICAgICAtIFBPU1RHUkVTX0RCPSR7REJfTkFNRTotc2d1aGFja30KICAgICAg
+LSBQT1NUR1JFU19VU0VSPSR7REJfVVNFUjotc2d1aGFja30KICAgIGVudl9maWxlOgogICAgICAt
+IC5lbnYuY29tcG9zZQogICAgZXhwb3NlOgogICAgICAtIDU0MzIKICAgIGhlYWx0aGNoZWNrOgog
+ICAgICB0ZXN0OiAicGdfaXNyZWFkeSAtLXVzZXJuYW1lPSR7REJfVVNFUjotc2d1aGFja30gLS1k
+YXRhYmFzZT0ke0RCX05BTUU6LXNndWhhY2t9IgogICAgICBpbnRlcnZhbDogNXMKICAgICAgdGlt
+ZW91dDogNXMKICAgICAgcmV0cmllczogMwogICAgICBzdGFydF9wZXJpb2Q6IDVzCgogIGRyYWdv
+bmZseToKICAgIGltYWdlOiBkb2NrZXIuZHJhZ29uZmx5ZGIuaW8vZHJhZ29uZmx5ZGIvZHJhZ29u
+Zmx5CiAgICB1bGltaXRzOgogICAgICBtZW1sb2NrOiAtMQogICAgaGVhbHRoY2hlY2s6CiAgICAg
+IHRlc3Q6IFsiQ01EIiwgInJlZGlzLWNsaSIsICItLXJhdyIsICJpbmNyIiwgInBpbmciXSAKICAg
+ICAgaW50ZXJ2YWw6IDVzCiAgICAgIHRpbWVvdXQ6IDVzCiAgICAgIHJldHJpZXM6IDMKICAgICAg
+c3RhcnRfcGVyaW9kOiA1cwo=" | base64 -d > docker-compose.yaml
+docker compose build
+docker compose up db backend dragonfly
+./dropdb.sh
+./initdb.sh
+echo "YW5ub3RhdGVkLXR5cGVzPT0wLjcuMAphbnlpbz09NC42LjIucG9zdDEKYXN5bmNwZz09MC4zMC4w
+CmNlcnRpZmk9PTIwMjQuOC4zMApjaGFyc2V0LW5vcm1hbGl6ZXI9PTMuNC4wCmNsaWNrPT04LjEu
+NwpkYXRhYmFzZXM9PTAuOS4wCmRuc3B5dGhvbj09Mi43LjAKZmFpc3MtY3B1PT0xLjkuMC5wb3N0
+MQpmYXN0YXBpPT0wLjExNS41CmZpbGVsb2NrPT0zLjE2LjEKZnNzcGVjPT0yMDI0LjEwLjAKZ3Jl
+ZW5sZXQ9PTMuMS4xCmgxMT09MC4xNC4wCmh1Z2dpbmdmYWNlLWh1Yj09MC4yNi4zCmlkbmE9PTMu
+MTAKSmluamEyPT0zLjEuNApqb2JsaWI9PTEuNC4yCk1hcmt1cFNhZmU9PTMuMC4yCm1vdG9yPT0z
+LjYuMAptcG1hdGg9PTEuMy4wCm5ldHdvcmt4PT0zLjQuMgpudW1weT09Mi4xLjMKbnZpZGlhLWN1
+Ymxhcy1jdTEyPT0xMi40LjUuOApudmlkaWEtY3VkYS1jdXB0aS1jdTEyPT0xMi40LjEyNwpudmlk
+aWEtY3VkYS1udnJ0Yy1jdTEyPT0xMi40LjEyNwpudmlkaWEtY3VkYS1ydW50aW1lLWN1MTI9PTEy
+LjQuMTI3Cm52aWRpYS1jdWRubi1jdTEyPT05LjEuMC43MApudmlkaWEtY3VmZnQtY3UxMj09MTEu
+Mi4xLjMKbnZpZGlhLWN1cmFuZC1jdTEyPT0xMC4zLjUuMTQ3Cm52aWRpYS1jdXNvbHZlci1jdTEy
+PT0xMS42LjEuOQpudmlkaWEtY3VzcGFyc2UtY3UxMj09MTIuMy4xLjE3MApudmlkaWEtbmNjbC1j
+dTEyPT0yLjIxLjUKbnZpZGlhLW52aml0bGluay1jdTEyPT0xMi40LjEyNwpudmlkaWEtbnZ0eC1j
+dTEyPT0xMi40LjEyNwpwYWNrYWdpbmc9PTI0LjIKcGlsbG93PT0xMS4wLjAKcHlkYW50aWM9PTIu
+MTAuMgpweWRhbnRpY19jb3JlPT0yLjI3LjEKcHltb25nbz09NC45LjIKcHl0aG9uLWRvdGVudj09
+MS4wLjEKUHlZQU1MPT02LjAuMgpyZWdleD09MjAyNC4xMS42CnJlcXVlc3RzPT0yLjMyLjMKc2Fm
+ZXRlbnNvcnM9PTAuNC41CnNjaWtpdC1sZWFybj09MS41LjIKc2NpcHk9PTEuMTQuMQpzZW50ZW5j
+ZS10cmFuc2Zvcm1lcnM9PTMuMy4xCnNldHVwdG9vbHM9PTc1LjYuMApzbmlmZmlvPT0xLjMuMQpT
+UUxBbGNoZW15PT0yLjAuMzYKc3RhcmxldHRlPT0wLjQxLjMKc3ltcHk9PTEuMTMuMQp0aHJlYWRw
+b29sY3RsPT0zLjUuMAp0b2tlbml6ZXJzPT0wLjIwLjMKdG9yY2g9PTIuNS4xCnRxZG09PTQuNjcu
+MQp0cmFuc2Zvcm1lcnM9PTQuNDYuMwp0cml0b249PTMuMS4wCnR5cGluZ19leHRlbnNpb25zPT00
+LjEyLjIKdXJsbGliMz09Mi4yLjMKdXZpY29ybj09MC4zMi4xCg==" | base64 -d | tee python_ml/requirements.txt
+python -m venv python_ml/venv
+source python_ml/venv/bin/activate
+pip install -r python_ml.requirements.txt
+uvicorn main:app —reload —host 0.0.0.0
 ```
-
-#### Второй шаг - инициализировать БД (будут созданы таблицы, а также первый администратор)
-
-```sh
-DB_USER=<название_БД> DB_NAME=<имя_пользователя> docker compose run --rm initdb
-```
-
-
-Готово! Ваш бекенд готов к изнурительной работе на господина-фронтенда.
-
-### Хочу сам севрер локально запустить, а всё остальное через Docker
-
-#### Первый шаг - запускаем PostgreSQL и Dragonfly
-
-```sh
-docker run --rm --name psql -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=<название_БД> -e POSTGRES_USER=<имя_пользователя> --network=host postgres:17.1-alpine
-docker run --rm --name dragonfly --ulimit memlock=-1 --network=host docker.dragonflydb.io/dragonflydb/dragonfly
-```
-
-#### Второй шаг - копируем .env.example в .env и меняем по вкусу
-
-```sh
-cp .env.example .env
-nvim .env
-```
-
-#### Третий шаг - инициализируем БД
-
-```
-go run cmd/initdb/main.go
-```
-
-#### Четвёртый шаг - запускаем проект
-
-```
-go run cmd/webserver/main.go
-```
-
-## Я хочу сюда комитить, чтобы всё было красиво
-
-Тогда выполни эту команду (предварительно установив в свою ОС pre-commit):
-
-```sh
-pre-commit install
-```
-
-## Что ещё?
-
-1. Во-первых, всё это чудо, как вы могли догадаться, написано на Go. Просто потому что он хайповый, производительный, компилируется быстро, он простой, все дела.
-2. В качестве либы для PostgreSQL используется pgx, просто потому что он не deprecated, в отличие от некоторых.
-3. Для дракоши используется go-redis. Дракономух идеально умеет мимикрировать под редиску, поэтому и используем эту либу.
-4. Для логов используем Zap. Быстрый, есть настройка уровня логгирования, написан Uber'ом. Why not, как говорится.
-5. В качестве веб-фреймворка используем Gin. Поддерживает валидацию JSON, хайповый, а больше ничего и не надо.
-
-Также, если хотите, вы можете почистить БД от ваших шалостей. Для этого вы можете выполнить одну из приведённых команд (в зависимости от вашего способа запуска):
-
-```sh
-DB_USER=<название_БД> DB_NAME=<имя_пользователя> docker compose run --rm dropdb
-```
-
-```sh
-go run cmd/dropdb/main.go
-```
-
-## Всё!
-
-Теперь мы можем в полной мере наслаждаться бекендом на Go :)
