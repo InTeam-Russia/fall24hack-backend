@@ -32,6 +32,7 @@ func main() {
 		Role:      "ADMIN",
 		Password:  config.AdminPassword,
 		Email:     config.AdminEmail,
+		TgLink:    "https://t.me/durov",
 	})
 
 	if err != nil {
